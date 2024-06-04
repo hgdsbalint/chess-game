@@ -1,5 +1,8 @@
 package state;
 
+/**
+ * Represent 8 directions
+ */
 public enum Direction {
     Up,
     Down,
