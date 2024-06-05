@@ -46,6 +46,35 @@ public class ChessState {
                 new Position(1, 1)  // Rock1 position
         };
     }
+    public ChessState(Position[] p1) {
+        positions = p1;
+    }
+
+    public String getPiece(int row, int col) {
+        for (int i = 0; i < positions.length; i++) {
+            if (positions[i].getRow() == row && positions[i].getCol() == col) {
+                switch (i) {
+                    case KING:
+                        System.out.println("King");
+                        return "King";
+                    case BISHOP:
+                        System.out.println("Bishop");
+                        return "Bishop";
+                    case BISHOP1:
+                        System.out.println("Bishop1");
+                        return "Bishop1";
+                    case ROCK:
+                        System.out.println("Rock");
+                        return "Rock";
+                    case ROCK1:
+                        System.out.println("Rock1");
+                        return "Rock1";
+                }
+            }
+        }
+        System.out.println("No piece at position (" + row + "," + col + ")");
+        return "";
+    }
     /**
      *
      * @return when the pieces are in the winning positions
@@ -60,7 +89,7 @@ public class ChessState {
     }
 
 
-    private boolean isEmpty(Position position) {
+    public boolean isEmpty(Position position) {
         // Checking that the positions is empty
         for (Position p : positions) {
             if (p.equals(position)) {
