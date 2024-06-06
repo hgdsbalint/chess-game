@@ -13,6 +13,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 
+import org.tinylog.Logger;
+
 public class GameController {
 
     @FXML
@@ -65,7 +67,6 @@ public class GameController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Error");
         }
     }
     @FXML
@@ -73,6 +74,7 @@ public class GameController {
         clearBoard();
         resetGame();
         loadImages();
+        Logger.info("The game is reloaded");
     }
 
     private ImageView createImageView(String imagePath) {
@@ -96,6 +98,7 @@ public class GameController {
 
     private void handleCellClick(MouseEvent event, int row, int col) {
         //System.out.printf("Click on cell at (%d,%d)%n", row, col);
+        Logger.trace("Click on the {}, {}", row, col);
 
         if (firstClick) {
 
@@ -111,7 +114,7 @@ public class GameController {
                 movePieceImage(firstRow, firstCol, row, col);
                 moveNumber.set(moveNumber.get() + 1);
                 if (state.isGoal()) {
-                    System.out.println("You win!");
+                    Logger.info("You win");
                     clearBoard();
                     resetGame();
                     loadImages();
@@ -119,7 +122,7 @@ public class GameController {
 
             }
             else {
-                System.out.println("Invalid move!");
+                Logger.warn("Invalid move");
             }
             firstClick = true;
         }
@@ -150,7 +153,7 @@ public class GameController {
                 board.add(piece, toCol, toRow);
             }
         } else {
-            System.out.println("invalid mv");
+            Logger.warn("Invalid move");
         }
     }
 
