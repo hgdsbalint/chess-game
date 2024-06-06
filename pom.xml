@@ -176,7 +176,7 @@
     <repositories>
         <repository>
             <id>github</id>
-            <url>https://maven.pkg.github.com/INBPM0420L/homework-project-utils</url>
+            <url>https://maven.pkg.github.com/INBPM0420L/homework-project-2024-hgdsbalint</url>
         </repository>
     </repositories>
 </project>
