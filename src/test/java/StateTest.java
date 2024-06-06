@@ -1,3 +1,4 @@
+import com.sun.source.tree.AssertTree;
 import state.ChessState;
 import state.Direction;
 import state.Position;
@@ -10,9 +11,9 @@ public class StateTest {
     ChessState state1 = new ChessState(); // initial state
 
     ChessState state2 = new ChessState(new Position[]{
+            new Position(0, 0),
+            new Position(1, 2),
             new Position(0, 1),
-            new Position(0, 2),
-            new Position(2, 2),
             new Position(1, 0),
             new Position(1, 1)
     }); // random state
@@ -80,5 +81,107 @@ public class StateTest {
         assertFalse(state1.canMoveRight(2));
         assertFalse(state1.canMoveRight(3));
         assertTrue(state1.canMoveRight(4));
+    }
+    @Test
+    public void testCanMoveDiagonalLeftDown() {
+        assertFalse(state1.canMoveDiagonalLeftDown(0));
+        assertFalse(state1.canMoveDiagonalLeftDown(1));
+        assertFalse(state1.canMoveDiagonalLeftDown(2));
+        assertFalse(state1.canMoveDiagonalLeftDown(3));
+        assertFalse(state1.canMoveDiagonalLeftDown(4));
+    }
+    @Test
+    public void testCanMoveDiagonalRightUp() {
+        assertFalse(state1.canMoveDiagonalRightUp(0));
+        assertFalse(state1.canMoveDiagonalRightUp(1));
+        assertFalse(state1.canMoveDiagonalRightUp(2));
+        assertFalse(state1.canMoveDiagonalRightUp(3));
+        assertFalse(state1.canMoveDiagonalRightUp(4));
+    }
+    @Test
+    public void testCanMoveDiagonalLeftup() {
+        assertFalse(state1.canMoveDiagonalRightUp(0));
+        assertFalse(state1.canMoveDiagonalRightUp(1));
+        assertFalse(state1.canMoveDiagonalRightUp(2));
+        assertFalse(state1.canMoveDiagonalRightUp(3));
+        assertFalse(state1.canMoveDiagonalRightUp(4));
+    }
+    @Test
+    public void testCanMoveDiagonalRightDown() {
+        assertFalse(state1.canMoveDiagonalRightDown(0));
+        assertTrue(state1.canMoveDiagonalRightDown(1));
+        assertFalse(state1.canMoveDiagonalRightDown(2));
+        assertFalse(state1.canMoveDiagonalRightDown(3));
+        assertFalse(state1.canMoveDiagonalRightDown(4));
+    }
+    @Test
+    public void testMoveRight() {
+        state1.move(4, Direction.Right);
+        int row = state1.positions[4].getRow();
+        int col = state1.positions[4].getCol();
+        assertEquals(1,row);
+        assertEquals(2,col);
+    }
+    @Test
+    public void testMoveDown() {
+        state1.move(0, Direction.Down);
+        int row = state1.positions[0].getRow();
+        int col = state1.positions[0].getCol();
+        assertEquals(1,row);
+        assertEquals(0,col);
+    }
+    @Test
+    public void testMoveUp() {
+        state1.move(4, Direction.Up);
+        int row = state1.positions[4].getRow();
+        int col = state1.positions[4].getCol();
+        assertEquals(0,row);
+        assertEquals(1,col);
+    }
+    @Test
+    public void testMoveLeft() {
+        state1.move(4, Direction.Left);
+        int row = state1.positions[4].getRow();
+        int col = state1.positions[4].getCol();
+        assertEquals(1,row);
+        assertEquals(0,col);
+    }
+    @Test
+    public void testMoveDiagonalLeftUp() {
+        state2.move(1, Direction.DiagonalLeftUp);
+        int row = state1.positions[1].getRow();
+        int col = state1.positions[1].getCol();
+        assertEquals(0,row);
+        assertEquals(1,col);
+    }
+    @Test
+    public void testMoveDiagonalLeftDown() {
+        state1.move(2, Direction.DiagonalLeftDown);
+        int row = state1.positions[2].getRow();
+        int col = state1.positions[2].getCol();
+        assertEquals(1,row);
+        assertEquals(1,col);
+    }
+    @Test
+    public void testMoveDigonalRightUp() {
+        state1.move(4, Direction.Right);
+        int row = state1.positions[4].getRow();
+        int col = state1.positions[4].getCol();
+        assertEquals(1,row);
+        assertEquals(2,col);
+    }
+    @Test
+    public void testMoveDigonalRightDown() {
+        state1.move(2, Direction.DiagonalRightDown);
+        int row = state1.positions[2].getRow();
+        int col = state1.positions[2].getCol();
+        assertEquals(1,row);
+        assertEquals(3,col);
+    }
+
+    @Test
+    public void testGetPiece(){
+        String piece = state1.getPiece(0,0);
+        assertEquals("King", piece);
     }
 }

@@ -1,5 +1,8 @@
 package gui;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.control.TextField;
 import state.ChessState;
 import state.Direction;
 import javafx.fxml.FXML;
@@ -14,21 +17,29 @@ public class GameController {
 
     @FXML
     private GridPane board;
+    @FXML
+    private TextField moveField;
     private ChessState state;
     private boolean firstClick = true;
     private int firstRow;
     private int firstCol;
-
+    private IntegerProperty moveNumber = new SimpleIntegerProperty();
     @FXML
     public void initialize() {
         resetGame();
         loadImages();
         setupBoardClickHandlers();
+        moveCounter();
     }
 
     private void resetGame() {
         state = new ChessState();
+        moveNumber.set(0);
     }
+    private void moveCounter() {
+        moveField.textProperty().bind(moveNumber.asString());
+    }
+
 
     public void loadImages() {
         try {
@@ -57,12 +68,18 @@ public class GameController {
             System.out.println("Error");
         }
     }
+    @FXML
+    private void pressButton(){
+        clearBoard();
+        resetGame();
+        loadImages();
+    }
 
     private ImageView createImageView(String imagePath) {
         Image image = new Image(getClass().getResourceAsStream(imagePath));
         ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(50);
-        imageView.setFitHeight(50);
+        imageView.setFitWidth(100);
+        imageView.setFitHeight(100);
         return imageView;
     }
     private void setupBoardClickHandlers() {
@@ -92,9 +109,12 @@ public class GameController {
             if (pieceId != -1 && direction != null && state.canMove(pieceId, direction)) {
                 state.move(pieceId, direction);
                 movePieceImage(firstRow, firstCol, row, col);
-                System.out.println(direction);
+                moveNumber.set(moveNumber.get() + 1);
                 if (state.isGoal()) {
                     System.out.println("You win!");
+                    clearBoard();
+                    resetGame();
+                    loadImages();
                 }
 
             }
@@ -191,4 +211,8 @@ public class GameController {
         }
         return null;
     }
+    private void clearBoard() {
+        board.getChildren().removeIf(t-> t instanceof ImageView);
+    }
+
 }

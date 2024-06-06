@@ -32,7 +32,7 @@ public class ChessState {
      * Index of the other Rock
      */
     public static final int ROCK1 = 4;
-    protected Position positions[];
+    public Position positions[];
 
     /**
      * Initial the starting state
