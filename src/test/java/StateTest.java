@@ -99,7 +99,7 @@ public class StateTest {
         assertFalse(state1.canMoveDiagonalRightUp(4));
     }
     @Test
-    public void testCanMoveDiagonalLeftup() {
+    public void testCanMoveDiagonalLeftUp() {
         assertFalse(state1.canMoveDiagonalRightUp(0));
         assertFalse(state1.canMoveDiagonalRightUp(1));
         assertFalse(state1.canMoveDiagonalRightUp(2));
