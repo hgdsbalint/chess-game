@@ -1,9 +1,20 @@
 package state;
 
+import javafx.scene.control.skin.TextInputControlSkin;
+import puzzle.TwoPhaseMoveState;
+import puzzle.solver.BreadthFirstSearch;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+import static state.Direction.getDirection;
+
 /**
  * Contains the state of a chess
  */
-public class ChessState {
+public class ChessState implements TwoPhaseMoveState<Integer> {
     /**
      * Number of the table row
      */
@@ -194,5 +205,128 @@ public class ChessState {
             case DiagonalRightUp -> positions[piece].setDiagonalRightUp();
             case DiagonalRightDown -> positions[piece].setDiagonalRightDown();
         }
+    }
+    private int calculateDestination(int piece, Direction direction) {
+        switch (direction) {
+            case Up:
+                return piece - BOARD_COL;
+            case Down:
+                return piece + BOARD_COL;
+            case Left:
+                return piece - 1;
+            case Right:
+                return piece + 1;
+            case DiagonalLeftDown:
+                return piece + BOARD_COL - 1;
+            case DiagonalLeftUp:
+                return piece - BOARD_COL - 1;
+            case DiagonalRightUp:
+                return piece - BOARD_COL + 1;
+            case DiagonalRightDown:
+                return piece + BOARD_COL + 1;
+            default:
+                throw new IllegalArgumentException("Invalid direction");
+        }
+    }
+    @Override
+    public boolean isLegalToMoveFrom(Integer piece) {
+       for(Direction direction:Direction.values()){
+           if(canMove(piece,direction)){
+               return true;
+           }
+       }
+       return false;
+    }
+
+    @Override
+    public boolean isSolved() {
+        return isGoal();
+    }
+
+    @Override
+    public boolean isLegalMove(TwoPhaseMove<Integer> move) {
+        int piece = move.from();
+        int fromRow = move.from()/ BOARD_COL;
+        int fromCol = move.from()% BOARD_COL;
+        int row = move.to() / BOARD_COL;
+        int col = move.to() % BOARD_COL;
+        if(canMove(piece, getDirection(fromRow,fromCol,row,col))){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void makeMove(TwoPhaseMove<Integer> move) {
+        if (isLegalMove(move)) {
+            int fromRow = move.from() / BOARD_COL;
+            int fromCol = move.from() % BOARD_COL;
+            int toRow = move.to() / BOARD_COL;
+            int toCol = move.to() % BOARD_COL;
+
+            Direction direction = getDirection(fromRow, fromCol, toRow, toCol);
+
+            if (canMove(move.from(), direction)) {
+                move(move.from(), direction);
+                System.out.println(move.from() + " " + direction);
+            }
+        }
+    }
+
+    @Override
+    public Set<TwoPhaseMove<Integer>> getLegalMoves() {
+        Set<TwoPhaseMove<Integer>> legalMoves = new HashSet<>();
+        for (int i = 0; i < positions.length; i++) {
+            for (Direction direction : Direction.values()) {
+                if (canMove(i, direction)) {
+                    legalMoves.add(new TwoPhaseMove<>(i, calculateDestination(i, direction)));
+                }
+            }
+        }
+        return legalMoves;
+    }
+
+    @Override
+    public ChessState clone() {
+        ChessState copy;
+        try {
+            copy = (ChessState) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+        copy.positions = new Position[positions.length];
+        for (int i = 0; i < positions.length; i++) {
+            copy.positions[i] = new Position(positions[i].getRow(), positions[i].getCol());
+        }
+
+        return copy;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessState that = (ChessState) o;
+        return Arrays.equals(positions, that.positions);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(positions);
+    }
+
+    @Override
+    public String toString() {
+        String result = "";
+        for (int i = 0; i < positions.length; i++) {
+            result += "Piece " + i + ": " + positions[i] + "\n";
+        }
+        return result;
+    }
+
+    public static void main(String[] args) {
+        new BreadthFirstSearch<TwoPhaseMove<Integer>>()
+                .solveAndPrintSolution(new ChessState());
     }
 }
