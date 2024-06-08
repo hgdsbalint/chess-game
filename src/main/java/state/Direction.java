@@ -13,6 +13,14 @@ public enum Direction {
     DiagonalLeftDown,
     DiagonalRightDown;
 
+    /**
+     *  It will calculate the direction ftom the starting and the target position
+     * @param startRow starting position row index
+     * @param startCol starting position column index
+     * @param targetRow target position row index
+     * @param targetCol target position column index
+     * @return a possible direction
+     */
     public static Direction getDirection(int startRow, int startCol, int targetRow, int targetCol) {
         int rowDiff = targetRow - startRow;
         int colDiff = targetCol - startCol;
@@ -29,7 +37,7 @@ public enum Direction {
             if (colDiff < 0) {
                 return Direction.Left;
             } else if (colDiff == 0) {
-                return Right; // Same position
+                return null;
             } else {
                 return Direction.Right;
             }

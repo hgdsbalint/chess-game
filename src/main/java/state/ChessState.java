@@ -38,7 +38,7 @@ public class ChessState implements TwoPhaseMoveState<Integer>, Cloneable {
      * Index of the other Rock
      */
     public static final int ROCK1 = 4;
-    public Position positions[];
+    public Position[] positions;
 
     /**
      * Initial the starting state
@@ -72,19 +72,14 @@ public class ChessState implements TwoPhaseMoveState<Integer>, Cloneable {
             if (positions[i].getRow() == row && positions[i].getCol() == col) {
                 switch (i) {
                     case KING:
-                        System.out.println("King");
                         return "King";
                     case BISHOP:
-                        System.out.println("Bishop");
                         return "Bishop";
                     case BISHOP1:
-                        System.out.println("Bishop1");
                         return "Bishop1";
                     case ROCK:
-                        System.out.println("Rock");
                         return "Rock";
                     case ROCK1:
-                        System.out.println("Rock1");
                         return "Rock1";
                 }
             }
@@ -170,10 +165,7 @@ public class ChessState implements TwoPhaseMoveState<Integer>, Cloneable {
      * @return with that the piece can move diagonalLeftDown
      */
     public boolean canMoveDiagonalLeftDown(int piece) {
-        return positions[piece].getRow() < BOARD_ROW - 1
-                && positions[piece].getCol() > 0
-                && isEmpty(positions[piece].getDiagonalLeftDown())
-                && (piece == KING || piece == BISHOP || piece == BISHOP1);
+        return positions[piece].getRow() < BOARD_ROW - 1 && positions[piece].getCol() > 0 && isEmpty(positions[piece].getDiagonalLeftDown()) && (piece == KING || piece == BISHOP || piece == BISHOP1);
     }
     /**
      * @param piece index of the piece
@@ -269,12 +261,12 @@ public class ChessState implements TwoPhaseMoveState<Integer>, Cloneable {
     @Override
     public boolean isLegalMove(TwoPhaseMove<Integer> move) {
         int piece = move.from();
-        int fromRow = move.from()/ BOARD_COL;
-        int fromCol = move.from()% BOARD_COL;
+        int fromRow = move.from() / BOARD_COL;
+        int fromCol = move.from() % BOARD_COL;
         int row = move.to() / BOARD_COL;
         int col = move.to() % BOARD_COL;
-        if(canMove(piece, getDirection(fromRow,fromCol,row,col))){
-            return true;
+        if (row > 0 || col > 0) {
+            return canMove(piece, Objects.requireNonNull(getDirection(fromRow, fromCol, row, col)));
         }
         return false;
     }
@@ -295,7 +287,8 @@ public class ChessState implements TwoPhaseMoveState<Integer>, Cloneable {
 
             if (canMove(move.from(), direction)) {
                 move(move.from(), direction);
-                System.out.println(move.from() + " " + direction);
+                //System.out.println(fromRow + " " + fromCol + " " + direction + " " + toRow + " " + toCol);
+
             }
         }
     }
@@ -316,6 +309,10 @@ public class ChessState implements TwoPhaseMoveState<Integer>, Cloneable {
         }
         return legalMoves;
     }
+
+    /**
+     * @return state's clone
+     */
     @Override
     public ChessState clone() {
         ChessState copy;
@@ -332,7 +329,10 @@ public class ChessState implements TwoPhaseMoveState<Integer>, Cloneable {
         return copy;
     }
 
-
+    /**
+     * @param o compare this object
+     * @return {@code true} when the state is equals to an objects
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -341,12 +341,17 @@ public class ChessState implements TwoPhaseMoveState<Integer>, Cloneable {
         return Arrays.equals(positions, that.positions);
     }
 
+    /**
+     * @return Hash code of the state
+     */
     @Override
     public int hashCode() {
         return Arrays.hashCode(positions);
     }
 
-
+    /**
+     * @return a string what is represents the state
+     */
     @Override
     public String toString() {
         String result = "";
@@ -357,7 +362,14 @@ public class ChessState implements TwoPhaseMoveState<Integer>, Cloneable {
     }
 
     public static void main(String[] args) {
+        ChessState state1 = new ChessState( new Position[]{
+                new Position(0, 2), // King position
+                new Position(0, 1), // Bishop position
+                new Position(0, 0), // Bishop1 position
+                new Position(1, 0), // Rock position
+                new Position(1, 1)
+        });
         new BreadthFirstSearch<TwoPhaseMove<Integer>>()
-                .solveAndPrintSolution(new ChessState());
+                .solveAndPrintSolution(state1);
     }
 }

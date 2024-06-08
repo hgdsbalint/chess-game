@@ -143,21 +143,22 @@ public class Position{
         this.row++;
         this.col++;
     }
+
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        Position position = (Position) obj;
-        return row == position.row && col == position.col;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Position position = (Position) o;
+
+        if (row != position.row) return false;
+        return col == position.col;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(row, col);
+        int result = row;
+        result = 31 * result + col;
+        return result;
     }
-
 }

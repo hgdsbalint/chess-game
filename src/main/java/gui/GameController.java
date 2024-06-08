@@ -68,6 +68,7 @@ public class GameController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Logger.info("Loading images...");
     }
     @FXML
     private void pressButton(){
@@ -90,14 +91,13 @@ public class GameController {
                 int finalRow = row;
                 int finalCol = col;
                 StackPane cell = new StackPane();
-                cell.setOnMouseClicked(event -> handleCellClick(event, finalRow, finalCol));
+                cell.setOnMouseClicked(event -> handleCellClick(finalRow, finalCol));
                 board.add(cell, finalCol, finalRow);
             }
         }
     }
 
-    private void handleCellClick(MouseEvent event, int row, int col) {
-        //System.out.printf("Click on cell at (%d,%d)%n", row, col);
+    private void handleCellClick(int row, int col) {
         Logger.trace("Click on the {}, {}", row, col);
 
         if (firstClick) {
@@ -119,7 +119,6 @@ public class GameController {
                     resetGame();
                     loadImages();
                 }
-
             }
             else {
                 Logger.warn("Invalid move");
@@ -135,7 +134,7 @@ public class GameController {
         if (row == null || col == null) {
             return;
         }
-        handleCellClick(event, row, col);
+        handleCellClick(row, col);
     }
 
     private int getPieceIdFromPosition(int row, int col) {
