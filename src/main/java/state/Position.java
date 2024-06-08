@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * Represent the piece position
  */
-public class Position {
+public class Position{
     private int row;
     private int col;
 
@@ -159,4 +159,5 @@ public class Position {
     public int hashCode() {
         return Objects.hash(row, col);
     }
+
 }

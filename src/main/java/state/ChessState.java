@@ -1,20 +1,15 @@
 package state;
 
-import javafx.scene.control.skin.TextInputControlSkin;
 import puzzle.TwoPhaseMoveState;
 import puzzle.solver.BreadthFirstSearch;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import static state.Direction.getDirection;
-
 /**
  * Contains the state of a chess
  */
-public class ChessState implements TwoPhaseMoveState<Integer> {
+public class ChessState implements TwoPhaseMoveState<Integer>, Cloneable {
     /**
      * Number of the table row
      */
@@ -57,10 +52,21 @@ public class ChessState implements TwoPhaseMoveState<Integer> {
                 new Position(1, 1)  // Rock1 position
         };
     }
+
+    /**
+     * ChessState's constructor
+     * @param p1 positions array
+     */
     public ChessState(Position[] p1) {
         positions = p1;
     }
 
+    /**
+     *  Gets a position and decide what piece
+     * @param row it's piece row
+     * @param col it's piece col
+     * @return it returns the piece name from the position
+     */
     public String getPiece(int row, int col) {
         for (int i = 0; i < positions.length; i++) {
             if (positions[i].getRow() == row && positions[i].getCol() == col) {
@@ -87,11 +93,10 @@ public class ChessState implements TwoPhaseMoveState<Integer> {
         return "";
     }
     /**
-     *
-     * @return when the pieces are in the winning positions
+     *  Checking that the pieces are in winning position
+     * @return {@code true} when the pieces are in the winning positions {@code false} is not in a winning position
      */
     public boolean isGoal() {
-        // Checking that the pieces are in the winning positions
         return positions[KING].equals(new Position(1, 2))
                 && positions[BISHOP].equals(new Position(0, 1))
                 && positions[BISHOP1].equals(new Position(0, 0))
@@ -99,9 +104,12 @@ public class ChessState implements TwoPhaseMoveState<Integer> {
                 && ((positions[ROCK1].equals(new Position(1, 1)) || positions[ROCK1].equals(new Position(1, 0))));
     }
 
-
+    /**
+     *  It decides that the positon's empty
+     * @param position thw position what we decide is's empty
+     * @return {@code true} when the position is empty {@code false} when it's not empty
+     */
     public boolean isEmpty(Position position) {
-        // Checking that the positions is empty
         for (Position p : positions) {
             if (p.equals(position)) {
                 return false;
@@ -114,7 +122,7 @@ public class ChessState implements TwoPhaseMoveState<Integer> {
      * It decides that can move with the piece to a direction
      * @param piece index of the piece
      * @param direction one of the 8 possible direction where we wanted to move
-     * @return
+     * @return the direction where wanted to move
      */
     public boolean canMove(int piece, Direction direction) {
         return switch (direction) {
@@ -228,6 +236,12 @@ public class ChessState implements TwoPhaseMoveState<Integer> {
                 throw new IllegalArgumentException("Invalid direction");
         }
     }
+
+    /**
+     *  Decide that the piece can move to a specified direction
+     * @param piece id of the piece
+     * @return {@code true} if the piece can move to the direction {@code} other
+     */
     @Override
     public boolean isLegalToMoveFrom(Integer piece) {
        for(Direction direction:Direction.values()){
@@ -238,11 +252,20 @@ public class ChessState implements TwoPhaseMoveState<Integer> {
        return false;
     }
 
+    /**
+     * Decide that the pieces in the goal state
+     * @return {@code true} if the state is in goal position {@code false} other
+     */
     @Override
     public boolean isSolved() {
         return isGoal();
     }
 
+    /**
+     *  Decide that the move is legal
+     * @param move the piece move
+     * @return {@code true} if the move is legal {@code false} other
+     */
     @Override
     public boolean isLegalMove(TwoPhaseMove<Integer> move) {
         int piece = move.from();
@@ -256,6 +279,10 @@ public class ChessState implements TwoPhaseMoveState<Integer> {
         return false;
     }
 
+    /**
+     * Make a move if it's legal
+     * @param move move what is going make
+     */
     @Override
     public void makeMove(TwoPhaseMove<Integer> move) {
         if (isLegalMove(move)) {
@@ -273,6 +300,10 @@ public class ChessState implements TwoPhaseMoveState<Integer> {
         }
     }
 
+    /**
+     * A set collect the legal moves from the state
+     * @return a set of legal moves
+     */
     @Override
     public Set<TwoPhaseMove<Integer>> getLegalMoves() {
         Set<TwoPhaseMove<Integer>> legalMoves = new HashSet<>();
@@ -285,7 +316,6 @@ public class ChessState implements TwoPhaseMoveState<Integer> {
         }
         return legalMoves;
     }
-
     @Override
     public ChessState clone() {
         ChessState copy;
@@ -315,6 +345,7 @@ public class ChessState implements TwoPhaseMoveState<Integer> {
     public int hashCode() {
         return Arrays.hashCode(positions);
     }
+
 
     @Override
     public String toString() {
